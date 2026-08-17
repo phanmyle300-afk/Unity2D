@@ -1,0 +1,189 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8632935758937179729
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7374507662642538736}
+  - component: {fileID: 4374554839090120443}
+  - component: {fileID: 4070756777368991663}
+  - component: {fileID: 3630287802268917292}
+  - component: {fileID: 8018187149439609394}
+  - component: {fileID: 5204403894597703817}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7374507662642538736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632935758937179729}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &4374554839090120443
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632935758937179729}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!81 &4070756777368991663
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632935758937179729}
+  m_Enabled: 1
+--- !u!114 &3630287802268917292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632935758937179729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+--- !u!114 &8018187149439609394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632935758937179729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75243f02853dc8748bede28e6e200aee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 0, z: -5}
+  cameraSpeed: 20
+--- !u!114 &5204403894597703817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632935758937179729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccc3ba1eda593384d8d8e8ef8afd6eec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RedBullet: {fileID: 1460185741232096155, guid: d84a022d7525ac340b6da6059174ae99, type: 3}
+  BlueBullet: {fileID: 941212998636232502, guid: 6b1b0f5fc9fdd654fa99bbb5e61b593b, type: 3}
+  GreenBullet: {fileID: 3987229037164747476, guid: 30d349ef62f97d74ebb6f7ebd164be4f, type: 3}
+  BlackBullet: {fileID: 658376647165923361, guid: b0fbd23b9dbf83f47b172fe8f0fb8719, type: 3}
+  OrangeBullet: {fileID: 60247501015149259, guid: f23400c8e49f79243a82a19e670c1584, type: 3}
+  PurpleBullet: {fileID: 3294589993520517354, guid: d3276854127552443a1de60ad627db9c, type: 3}
+  HealthPosion_LVL1: {fileID: 2486716108493641663, guid: e0d8e9214ff2090458b17f9f2c0e81e7, type: 3}
+  HealthPosion_LVL2: {fileID: 2326487468825278526, guid: 47ba3e9116341fd4a9ebf33ee070b346, type: 3}
+  HealthPosion_LVL3: {fileID: 5820747585089533213, guid: becb1d621adae1348a03816a63435fea, type: 3}
+  HealthPosion_LVL4: {fileID: 1555367504007763774, guid: 461e79d8916f82945afbd7b0c47f9870, type: 3}
+  apple: {fileID: 1917440577891102893, guid: 88132fd5c574c0f41a8f827862f2b006, type: 3}
+  carrot: {fileID: 2503702041461511171, guid: 4a5218076d7cfb04c9470cf2c1b08f35, type: 3}
+  banana: {fileID: 4540772270245395854, guid: 20402134bc0cb5d4d8b851f043a33e4f, type: 3}
+  aubergine: {fileID: 2257836138195445670, guid: 5b809a137ddc6074a8e8aafe1bcbf1ab, type: 3}
+  grape: {fileID: 548115353183693677, guid: 594b248c9c9664b4e8fe1066b4f03966, type: 3}
+  garlic: {fileID: 2013968345752554439, guid: 6c7650d0bdcc9754ba9342e16be5cabf, type: 3}
+  lemon: {fileID: 3913527922544694510, guid: aaa3b0e01947fc0449c5a8508af8ec5e, type: 3}
+  strawBerry: {fileID: 8295436851934577120, guid: 77c88bcabce537f4fafa98f64ebcec0b, type: 3}
+  piper: {fileID: 4303837756552940277, guid: 15c0d4323f100664db3893319a51fdfb, type: 3}
+  pineapple: {fileID: 6853973131548446444, guid: 0e3d442de2b93a8489358eb5b4001fcc, type: 3}
+  tomato: {fileID: 9023729929392011114, guid: 1e13df5526fe2484b83d6f48948dfd83, type: 3}
+  corn: {fileID: 6798605488216798955, guid: 05478a461f00492418777798d4436e92, type: 3}
