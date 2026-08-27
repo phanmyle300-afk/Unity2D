@@ -6,42 +6,38 @@ using UnityEngine.Tilemaps;
 public class MainCharacterController : MonoBehaviour
 {
     [Header("Run Settings")]
-    private float runInputX;
-    public float runVectorMagnitude = 1;
-    private Vector2 runVector2;
+    public float runVectorMagnitude = 5f;
 
     [Header("Jump Settings")]
-    public float jumpInputY;
-    public float jumpVectorMagnitude;
-    private Vector2 jumpVector2;
+    public float jumpInputY = 1f;
+    public float jumpVectorMagnitude = 10f;
     public float jumpDuration = 0.2f;
-    private float jumpTimer = 0;
+    private float jumpTimer = 0f;
     public float gravityScaleWhileJumping = 0.5f;
-    public float gravityScaleWhileFalling = 5;
+    public float gravityScaleWhileFalling = 5f;
 
     [Header("Wall Cling Settings")]
     public float wallClingDuration = 1f;
-    private float wallClingTimer = 0;
+    private float wallClingTimer = 0f;
 
     [Header("Ladder Movement Settings")]
     private float ladderMoveInputY;
     public float ladderMoveVectorMagnitude = 1f;
-    private Vector2 ladderMoveVector2;
 
     [Header("Dash Settings")]
-    public float dashInputX = 1;
-    public float dashVectorMagnitude = 1;
-    private Vector2 dashVector2;
+    public float dashInputX = 1f;
+    public float dashVectorMagnitude = 1f;
     public float dashDurantion = 0.1f;
-    private float dashTimer = 0;
-    public float dashCooldown = 1f; // Cooldown süresi
-    private float dashCooldownTimer = 0; // Cooldown zamanlayıcısı
+    private float dashTimer = 0f;
+    public float dashCooldown = 1f;
+    private float dashCooldownTimer = 0f;
 
     private Rigidbody2D playerRigidBody2D;
     private SpriteRenderer playerSpriteRenderer;
     private GameObject StairsHelper;
     private Animator playerAnimator;
-    private TrailRenderer trailRenderer; // Trail Renderer reference
+    private TrailRenderer trailRenderer;
+    private MainCharacter mainCharacterScript;
 
     private bool isOnGround = false;
     private bool isJumping = false;
@@ -49,17 +45,27 @@ public class MainCharacterController : MonoBehaviour
     private bool isOnLadder = false;
     private bool isDashing = false;
 
+    // Biến di chuyển nút cảm ứng Mobile UI
+    private float mobileRunInputX = 0f;
+
     private void Start()
     {
-        playerRigidBody2D = this.gameObject.GetComponent<Rigidbody2D>();
-        playerSpriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
+        playerRigidBody2D = GetComponent<Rigidbody2D>();
+        playerSpriteRenderer = GetComponent<SpriteRenderer>();
         StairsHelper = GameObject.FindWithTag("StairsHelper");
-        playerAnimator = this.gameObject.GetComponent<Animator>();
-        playerRigidBody2D.gravityScale = 20f;
-        trailRenderer = this.gameObject.GetComponentInChildren<TrailRenderer>(); // Assuming the Trail Renderer is a child of the character
+        playerAnimator = GetComponent<Animator>();
+        mainCharacterScript = GetComponent<MainCharacter>();
+        
+        if (playerRigidBody2D != null)
+        {
+            playerRigidBody2D.gravityScale = 20f;
+            playerRigidBody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+
+        trailRenderer = GetComponentInChildren<TrailRenderer>();
         if (trailRenderer != null)
         {
-            trailRenderer.enabled = false; // Ensure it's disabled initially
+            trailRenderer.enabled = false;
         }
     }
 
@@ -70,7 +76,7 @@ public class MainCharacterController : MonoBehaviour
         Jump();
         HandleWallClingTimer();
         LadderMovement();
-        DashCooldownTimer(); // Cooldown zamanlayıcısını güncelle
+        DashCooldownTimer();
         dashMovement();
         DashTimer();
     }
@@ -79,21 +85,24 @@ public class MainCharacterController : MonoBehaviour
     {
         if (!isOnWall && !isDashing)
         {
-            runInputX = Input.GetAxis("Horizontal");
-            playerAnimator.SetFloat("isRun", Mathf.Abs(runInputX));
-            float x = runInputX * runVectorMagnitude;
+            float keyboardInput = Input.GetAxisRaw("Horizontal");
+            float currentInput = (keyboardInput != 0) ? keyboardInput : mobileRunInputX;
 
-            if (runInputX < 0)
+            if (playerAnimator != null)
             {
-                this.gameObject.transform.rotation = new Quaternion(0, 180, 0, 0);
-            }
-            else if (runInputX > 0)
-            {
-                this.gameObject.transform.rotation = new Quaternion(0, 0, 0, 0);
+                playerAnimator.SetFloat("isRun", Mathf.Abs(currentInput));
             }
 
-            runVector2 = new Vector2(x, playerRigidBody2D.velocity.y);
-            playerRigidBody2D.velocity = runVector2;
+            if (currentInput == 0)
+            {
+                playerRigidBody2D.velocity = new Vector2(0f, playerRigidBody2D.velocity.y);
+                return;
+            }
+
+            if (currentInput < 0) transform.rotation = Quaternion.Euler(0, 180, 0);
+            else if (currentInput > 0) transform.rotation = Quaternion.Euler(0, 0, 0);
+
+            playerRigidBody2D.velocity = new Vector2(currentInput * runVectorMagnitude, playerRigidBody2D.velocity.y);
 
             if (playerRigidBody2D.velocity.y < 0 && !isOnLadder)
             {
@@ -106,18 +115,62 @@ public class MainCharacterController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && (isOnGround || isOnWall))
         {
-            playerAnimator.SetTrigger("isJumping");
+            ExecuteJump();
+        }
+    }
+
+    private void ExecuteJump()
+    {
+        if (isOnGround || isOnWall)
+        {
+            if (playerAnimator != null) playerAnimator.SetTrigger("isJumping");
             playerRigidBody2D.gravityScale = gravityScaleWhileJumping;
 
             float y = jumpInputY * jumpVectorMagnitude;
-            jumpVector2 = new Vector2(playerRigidBody2D.velocity.x, y);
-            playerRigidBody2D.AddForce(jumpVector2,ForceMode2D.Impulse);
-            
+            playerRigidBody2D.AddForce(new Vector2(playerRigidBody2D.velocity.x, y), ForceMode2D.Impulse);
 
             isJumping = true;
             isOnGround = false;
         }
     }
+
+    // ==========================================
+    // CÁC HÀM CẢM ỨNG MOBILE (EVENT TRIGGER)
+    // ==========================================
+
+    public void PointerDownLeft()
+    {
+        mobileRunInputX = -1f;
+    }
+
+    public void PointerDownRight()
+    {
+        mobileRunInputX = 1f;
+    }
+
+    public void PointerUpMove()
+    {
+        mobileRunInputX = 0f;
+        if (playerRigidBody2D != null)
+        {
+            playerRigidBody2D.velocity = new Vector2(0f, playerRigidBody2D.velocity.y);
+        }
+    }
+
+    public void PointerDownJump()
+    {
+        ExecuteJump();
+    }
+
+    public void PointerDownPunch()
+    {
+        if (mainCharacterScript != null)
+        {
+            mainCharacterScript.ExecutePunch();
+        }
+    }
+
+    // ==========================================
 
     private void LadderMovement()
     {
@@ -125,44 +178,36 @@ public class MainCharacterController : MonoBehaviour
         {
             ladderMoveInputY = Input.GetAxis("Vertical");
             float y = ladderMoveInputY * ladderMoveVectorMagnitude;
-            ladderMoveVector2 = new Vector2(playerRigidBody2D.velocity.x, y);
 
-            if (y != 0)
+            if (playerAnimator != null)
             {
-                playerSpriteRenderer.sortingOrder = 2;
-                playerAnimator.SetBool("isMoveingStair",true);
-            } else
-            {
-                playerAnimator.SetBool("isMoveingStair", false);
+                playerAnimator.SetBool("isMoveingStair", y != 0);
             }
 
-            playerRigidBody2D.velocity = ladderMoveVector2;
+            if (y != 0 && playerSpriteRenderer != null)
+            {
+                playerSpriteRenderer.sortingOrder = 2;
+            }
+
+            playerRigidBody2D.velocity = new Vector2(playerRigidBody2D.velocity.x, y);
         }
     }
 
     private void dashMovement()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1) && dashCooldownTimer <= 0) // Cooldown kontrolü
+        if (Input.GetKeyDown(KeyCode.Mouse1) && dashCooldownTimer <= 0)
         {
             isDashing = true;
-            dashCooldownTimer = dashCooldown; // Cooldown zamanlayıcısını başlat
+            dashCooldownTimer = dashCooldown;
 
-            if (trailRenderer != null)
-            {
-                trailRenderer.enabled = true; // Enable Trail Renderer when dashing starts
-            }
+            if (trailRenderer != null) trailRenderer.enabled = true;
 
             float x = dashInputX * dashVectorMagnitude;
+            Vector2 dashVector2 = Vector2.zero;
 
-            if (playerRigidBody2D.velocity.x < 0)
-            {
-                dashVector2 = new Vector2(-x, 0);
-            }
-            else if(playerRigidBody2D.velocity.x > 0)
-            {
-                dashVector2 = new Vector2(x, 0);
-            }
-            
+            if (playerRigidBody2D.velocity.x < 0) dashVector2 = new Vector2(-x, 0);
+            else if (playerRigidBody2D.velocity.x > 0) dashVector2 = new Vector2(x, 0);
+
             playerRigidBody2D.AddForce(dashVector2, ForceMode2D.Impulse);
         }
     }
@@ -172,27 +217,19 @@ public class MainCharacterController : MonoBehaviour
         if (isDashing)
         {
             dashTimer += Time.deltaTime;
-
             if (dashDurantion < dashTimer)
             {
                 isDashing = false;
                 dashTimer = 0;
                 playerRigidBody2D.velocity = Vector2.zero;
-
-                if (trailRenderer != null)
-                {
-                    trailRenderer.enabled = false; // Disable Trail Renderer when dashing ends
-                }
+                if (trailRenderer != null) trailRenderer.enabled = false;
             }
         }
     }
 
     private void DashCooldownTimer()
     {
-        if (dashCooldownTimer > 0)
-        {
-            dashCooldownTimer -= Time.deltaTime; // Cooldown zamanlayıcısını azalt
-        }
+        if (dashCooldownTimer > 0) dashCooldownTimer -= Time.deltaTime;
     }
 
     private void HandleJumpTimer()
@@ -200,7 +237,6 @@ public class MainCharacterController : MonoBehaviour
         if (isJumping)
         {
             jumpTimer += Time.deltaTime;
-
             if (jumpDuration < jumpTimer || Input.GetKeyUp(KeyCode.Space))
             {
                 playerRigidBody2D.gravityScale = gravityScaleWhileFalling;
@@ -213,38 +249,30 @@ public class MainCharacterController : MonoBehaviour
     private void HandleWallClingTimer()
     {
         if (isOnWall)
-        {   
+        {
             wallClingTimer += Time.deltaTime;
-
-            if (wallClingDuration < wallClingTimer)
+            if (wallClingDuration < wallClingTimer || isJumping)
             {
                 wallClingTimer = 0;
                 playerRigidBody2D.gravityScale = gravityScaleWhileFalling;
                 isOnWall = false;
-                playerAnimator.SetBool("isHandlingWall", false);
-            }
-            else if (isJumping)
-            {
-                wallClingTimer = 0;
-                isOnWall = false;
-                playerAnimator.SetBool("isHandlingWall", false);
+                if (playerAnimator != null) playerAnimator.SetBool("isHandlingWall", false);
             }
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag.Equals("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isOnGround = true;
         }
 
-        if (collision.gameObject.tag.Equals("Wall"))
+        if (collision.gameObject.CompareTag("Wall"))
         {
-            print(playerRigidBody2D.velocity.y);
             if (!isOnGround && (playerRigidBody2D.velocity.y != 0 || isJumping))
             {
-                playerAnimator.SetBool("isHandlingWall", true);
+                if (playerAnimator != null) playerAnimator.SetBool("isHandlingWall", true);
                 playerRigidBody2D.gravityScale = 0;
                 playerRigidBody2D.velocity = Vector3.zero;
                 jumpTimer = 0;
@@ -255,10 +283,10 @@ public class MainCharacterController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag.Equals("Stairs"))
+        if (collision.gameObject.CompareTag("Stairs"))
         {
-            playerAnimator.SetBool("isOnStair", true);
-            StairsHelper.GetComponent<TilemapCollider2D>().isTrigger = true;
+            if (playerAnimator != null) playerAnimator.SetBool("isOnStair", true);
+            if (StairsHelper != null) StairsHelper.GetComponent<TilemapCollider2D>().isTrigger = true;
             isOnLadder = true;
             playerRigidBody2D.gravityScale = 0;
             playerRigidBody2D.velocity = new Vector2(playerRigidBody2D.velocity.x, 0);
@@ -267,13 +295,13 @@ public class MainCharacterController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag.Equals("Stairs"))
+        if (collision.gameObject.CompareTag("Stairs"))
         {
-            playerAnimator.SetBool("isOnStair", false);
-            StairsHelper.GetComponent<TilemapCollider2D>().isTrigger = false;
+            if (playerAnimator != null) playerAnimator.SetBool("isOnStair", false);
+            if (StairsHelper != null) StairsHelper.GetComponent<TilemapCollider2D>().isTrigger = false;
             isOnLadder = false;
             playerRigidBody2D.gravityScale = 1;
-            playerSpriteRenderer.sortingOrder = -1;
+            if (playerSpriteRenderer != null) playerSpriteRenderer.sortingOrder = -1;
             playerRigidBody2D.velocity = new Vector2(playerRigidBody2D.velocity.x, 0);
         }
     }
