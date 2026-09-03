@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: Bullet
       value: 
       objectReference: {fileID: 658376647165923361, guid: b0fbd23b9dbf83f47b172fe8f0fb8719, type: 3}
+    - target: {fileID: 483936281726659283, guid: c41ae2f5180651543b66f203afac46a2, type: 3}
+      propertyPath: jumpVectorMagnitude
+      value: 88
+      objectReference: {fileID: 0}
     - target: {fileID: 2199407618363775896, guid: c41ae2f5180651543b66f203afac46a2, type: 3}
       propertyPath: m_Name
       value: MainCharcter
