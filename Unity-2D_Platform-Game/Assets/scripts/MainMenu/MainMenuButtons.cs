@@ -5,12 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuButtons : MonoBehaviour
 {
-    AudioManagerMainMenu audioManager; // Ses yneticisi referans
-    public RectTransform settingsPanel; // Settings panelinin RectTransform referans
-    public GameObject mainMenuButtons; // Ana mendeki tularn GameObject grubu
+    AudioManagerMainMenu audioManager; // Tham chiếu Ses yöneticisi
+    public RectTransform settingsPanel; // Tham chiếu RectTransform của Settings panel
+    public GameObject mainMenuButtons; // Nhóm GameObject chứa các nút ở Main Menu
     public Vector2 targetPosition = new Vector2(0, 0); // Vị trí hiện giữa màn hình
     public Vector2 previousPosition = new Vector2(-1420, 0); // Vị trí giấu bảng ngoài màn hình
-    public float slideDuration = 0.5f; // Thời gian trượt bảng (saniye)
+    public float slideDuration = 0.5f; // Thời gian trượt bảng (giây)
 
     private void Start()
     {
@@ -45,8 +45,8 @@ public class MainMenuButtons : MonoBehaviour
         {
             audioManager.playButtonTouch();
         }
-        // Chuyển về Scene màn hình chính
-        SceneManager.LoadScene("MainMenu"); 
+        // Chuyển về Scene màn hình chính (Đã sửa tên thành MainMenü theo Build Settings)
+        SceneManager.LoadScene("MainMenü"); 
     }
 
     public void OnStartButtonPressed()
@@ -57,7 +57,7 @@ public class MainMenuButtons : MonoBehaviour
 
     public void OnSettingsButtonPressed()
     {
-        Debug.Log("Settings menu alyor...");
+        Debug.Log("Settings menu opening...");
         StartCoroutine(HideMainMenuButtonsWithDelay());
         StartCoroutine(SlidePanelToTarget(targetPosition));
         if (audioManager != null) audioManager.playButtonTouch();
@@ -65,45 +65,45 @@ public class MainMenuButtons : MonoBehaviour
 
     public void OnCloseSettingsButtonPressed()
     {
-        Debug.Log("Settings menu kapanyor...");
+        Debug.Log("Settings menu closing...");
         StartCoroutine(SlidePanelToTargetAndShowMainMenu(previousPosition));
         if (audioManager != null) audioManager.playButtonTouch();
     }
 
     public void OnExitButtonPressed()
     {
-        Debug.Log("Oyun kapatlyor...");
+        Debug.Log("Game Closing...");
         if (audioManager != null) audioManager.playButtonTouch();
         Application.Quit();
     }
 
     private IEnumerator HideMainMenuButtonsWithDelay()
     {
-        yield return new WaitForSeconds(0.5f); // Yarm saniye bekle
-        if (mainMenuButtons != null) mainMenuButtons.SetActive(false); // Ana men tularn gizle
+        yield return new WaitForSeconds(0.5f); // Chờ nửa giây
+        if (mainMenuButtons != null) mainMenuButtons.SetActive(false); // Ẩn các nút main menu
     }
 
     private IEnumerator SlidePanelToTarget(Vector2 destination)
     {
         if (settingsPanel == null) yield break;
 
-        Vector2 startPosition = settingsPanel.anchoredPosition; // Panelin balang pozisyonu
+        Vector2 startPosition = settingsPanel.anchoredPosition; // Vị trí bắt đầu của panel
         float elapsedTime = 0f;
 
         while (elapsedTime < slideDuration)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / slideDuration;
-            settingsPanel.anchoredPosition = Vector2.Lerp(startPosition, destination, t); // Pozisyonu yavaa deitir
+            settingsPanel.anchoredPosition = Vector2.Lerp(startPosition, destination, t); // Thay đổi vị trí từ từ
             yield return null;
         }
 
-        settingsPanel.anchoredPosition = destination; // Hedef pozisyona tam olarak yerletir
+        settingsPanel.anchoredPosition = destination; // Đặt chuẩn xác vị trí đích
     }
 
     private IEnumerator SlidePanelToTargetAndShowMainMenu(Vector2 destination)
     {
-        yield return SlidePanelToTarget(destination); // Paneli hedef pozisyona kaydr
-        if (mainMenuButtons != null) mainMenuButtons.SetActive(true); // Ana men tularn tekrar gster
+        yield return SlidePanelToTarget(destination); // Trượt panel về vị trí ẩn
+        if (mainMenuButtons != null) mainMenuButtons.SetActive(true); // Hiện lại các nút main menu
     }
-}       
+}

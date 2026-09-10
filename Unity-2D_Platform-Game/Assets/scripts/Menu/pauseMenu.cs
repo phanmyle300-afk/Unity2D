@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; // Thêm thư viện quản lý Scene
 
 public class pauseMenu : MonoBehaviour
 {
@@ -21,7 +22,6 @@ public class pauseMenu : MonoBehaviour
         Time.timeScale = 1f;
         pausePanel.SetActive(false);
         _pauseButton.SetActive(true);
-
     }
 
     public void settingsButton()
@@ -40,21 +40,25 @@ public class pauseMenu : MonoBehaviour
     {
         Time.timeScale = 1f;
         Application.Quit();
-        Debug.Log("Oyun kapat�l�yor...");
+        Debug.Log("Game Exiting...");
     }
 
     public void restartButton()
     {
         Time.timeScale = 1f;
-        sceneController.instance.RestartLevel();
+        if (sceneController.instance != null)
+        {
+            sceneController.instance.RestartLevel();
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     public void mainMenuButton()
     {
-        Time.timeScale = 1f;
-        sceneController.instance.LoadMainMenu();
+        Time.timeScale = 1f; // Khôi phục lại thời gian game trước khi chuyển Scene
+        SceneManager.LoadScene("MainMenü"); // Chuyển chính xác về Scene MainMenü (số 1)
     }
-
-
-
 }
