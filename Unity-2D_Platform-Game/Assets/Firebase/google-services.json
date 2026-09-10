@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "148400477877",
+    "project_id": "unity2d-51226",
+    "storage_bucket": "unity2d-51226.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148400477877:android:3f3270918c42bc89a850fc",
+        "android_client_info": {
+          "package_name": "com.MyLee.KnightRun"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4cwQe6XG4l8YYvU5x69OcTDLyYvc2Zbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

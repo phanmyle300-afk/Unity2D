@@ -21,12 +21,35 @@ public class FareControl : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.FindWithTag("Player");
+        FindPlayer();
         MouseAnimator = this.gameObject.GetComponent<Animator>();
+    }
+
+    // Tự động tìm lại nhân vật có Tag "Player" nếu biến player bị null
+    private void FindPlayer()
+    {
+        player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            playerTransform = player.transform;
+        }
     }
 
     private void Update()
     {
+        // Kiểm tra an toàn: Nếu player null thì tìm lại
+        if (player == null)
+        {
+            FindPlayer();
+            // Nếu vẫn không tìm thấy (ví dụ nhân vật đã chết hẳn), dừng xử lý để tránh crash code
+            if (player == null)
+            {
+                playerInRange = false;
+                playerTransform = null;
+                return;
+            }
+        }
+
         distance();
 
         if (playerInRange && playerTransform != null && !isActionActive)
@@ -37,6 +60,9 @@ public class FareControl : MonoBehaviour
 
     private void distance()
     {
+        // Bảo vệ bổ sung: Kiểm tra player trước khi lấy vị trí
+        if (player == null) return;
+
         float distance = Vector2.Distance(this.gameObject.transform.position, player.transform.position);
         if (distance < Range)
         {
@@ -58,14 +84,26 @@ public class FareControl : MonoBehaviour
 
         while (playerInRange && playerTransform != null)
         {
-            MouseAnimator.SetBool("isShooting", true);
+            if (MouseAnimator != null)
+            {
+                MouseAnimator.SetBool("isShooting", true);
+            }
+
             // 3 kere ateş et
             for (int i = 0; i < 3; i++)
             {
+                // Nếu đang bắn mà player bị hủy/chết giữa chừng thì dừng ngay
+                if (playerTransform == null) break;
+
                 ThrowTukuruk(playerTransform);
                 yield return new WaitForSeconds(0.6f);
             }
-            MouseAnimator.SetBool("isShooting", false);
+
+            if (MouseAnimator != null)
+            {
+                MouseAnimator.SetBool("isShooting", false);
+            }
+
             // 4 saniye boyunca takip et
             float followTime = 4f;
             float timer = 0f;
@@ -84,7 +122,6 @@ public class FareControl : MonoBehaviour
 
     private void FollowPlayer()
     {
-
         if (playerTransform == null) return;
 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -136,19 +173,24 @@ public class FareControl : MonoBehaviour
             float vx = velocity * Mathf.Cos(angle) * Mathf.Sign(distance);
             float vy = velocity * Mathf.Sin(angle);
 
-            // Tükürük anim     
+            // Tukuruk anim     
             rb.velocity = new Vector2(vx, vy);
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag.Equals("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            player.GetComponent<healthControl>().takeDamege(damage);
+            healthControl health = collision.gameObject.GetComponent<healthControl>();
+            if (health != null)
+            {
+                health.takeDamege(damage);
+            }
         }
     }
-  private void OnDrawGizmosSelected()
+
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, Range);

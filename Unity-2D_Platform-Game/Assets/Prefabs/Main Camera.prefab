@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3630287802268917292}
   - component: {fileID: 8018187149439609394}
   - component: {fileID: 5204403894597703817}
+  - component: {fileID: 426027554000120476}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -21,14 +22,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7374507662642538736
-Transform:
+--- !u!224 &7374507662642538736
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8632935758937179729}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -36,6 +36,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!20 &4374554839090120443
 Camera:
   m_ObjectHideFlags: 0
@@ -71,7 +76,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -151,8 +156,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75243f02853dc8748bede28e6e200aee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0, y: 0, z: -5}
-  cameraSpeed: 20
+  offset: {x: 0, y: 1, z: -10}
+  smoothTime: 0.15
 --- !u!114 &5204403894597703817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,3 +192,17 @@ MonoBehaviour:
   pineapple: {fileID: 6853973131548446444, guid: 0e3d442de2b93a8489358eb5b4001fcc, type: 3}
   tomato: {fileID: 9023729929392011114, guid: 1e13df5526fe2484b83d6f48948dfd83, type: 3}
   corn: {fileID: 6798605488216798955, guid: 05478a461f00492418777798d4436e92, type: 3}
+--- !u!114 &426027554000120476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632935758937179729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 1
+  m_AspectRatio: 1.77777

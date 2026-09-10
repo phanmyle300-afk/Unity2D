@@ -58,7 +58,8 @@ public class MainCharacterController : MonoBehaviour
         
         if (playerRigidBody2D != null)
         {
-            playerRigidBody2D.gravityScale = 20f;
+            // SỬA TẠI ĐÂY: Hạ gravityScale từ 20f xuống 2f để không bị quá nặng
+            playerRigidBody2D.gravityScale = 2f; 
             playerRigidBody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
@@ -164,9 +165,10 @@ public class MainCharacterController : MonoBehaviour
 
     public void PointerDownPunch()
     {
-        if (mainCharacterScript != null)
+        if (playerAnimator != null)
         {
-            mainCharacterScript.ExecutePunch();
+            playerAnimator.ResetTrigger("isAttacking");
+            playerAnimator.SetTrigger("isAttacking");
         }
     }
 
