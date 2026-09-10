@@ -37,6 +37,7 @@ public class MainCharacterController : MonoBehaviour
     private GameObject StairsHelper;
     private Animator playerAnimator;
     private TrailRenderer trailRenderer;
+    private MainCharacter mainCharacterScript;
 
     private bool isOnGround = false;
     private bool isJumping = false;
@@ -53,10 +54,12 @@ public class MainCharacterController : MonoBehaviour
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         StairsHelper = GameObject.FindWithTag("StairsHelper");
         playerAnimator = GetComponent<Animator>();
+        mainCharacterScript = GetComponent<MainCharacter>();
         
         if (playerRigidBody2D != null)
         {
-            playerRigidBody2D.gravityScale = 20f;
+            // SỬA TẠI ĐÂY: Hạ gravityScale từ 20f xuống 2f để không bị quá nặng
+            playerRigidBody2D.gravityScale = 2f; 
             playerRigidBody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
@@ -160,7 +163,6 @@ public class MainCharacterController : MonoBehaviour
         ExecuteJump();
     }
 
-    // SỬA TẠI ĐÂY: KÍCH HOẠT ANIMATOR TRỰC TIẾP ĐỂ TRÁNH LỖI CS1061
     public void PointerDownPunch()
     {
         if (playerAnimator != null)

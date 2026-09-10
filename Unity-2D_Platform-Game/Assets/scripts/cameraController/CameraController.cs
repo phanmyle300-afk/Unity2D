@@ -6,20 +6,37 @@ public class CameraController : MonoBehaviour
 {
     private Transform character;
     private Vector3 s = Vector3.zero;
-    public Vector3 offset;
-    public float cameraSpeed;
+    
+    [Header("Cấu hình vị trí & Tốc độ")]
+    public Vector3 offset = new Vector3(0, 1f, -10f); // Offset chuẩn cho 2D
+    public float smoothTime = 0.15f; // Thời gian làm mượt (càng nhỏ bám càng nhanh)
 
     private void Start()
     {
-        character = GameObject.FindWithTag("Player").GetComponent<Transform>();
+        FindPlayer();
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null)
+        {
+            character = playerObj.transform;
+        }
     }
 
     private void LateUpdate()
     {
+        // Tự tìm lại nhân vật nếu bị lỡ kết nối
+        if (character == null)
+        {
+            FindPlayer();
+            return;
+        }
+
         Vector3 targetPosition = character.position + offset;
-        Vector3 CameraPosition = this.gameObject.transform.position;
-
-        this.gameObject.transform.position = Vector3.SmoothDamp(CameraPosition, targetPosition, ref s, cameraSpeed * Time.fixedDeltaTime);
+        
+        // Dùng SmoothDamp mượt mà, dùng smoothTime trực tiếp (không nhân fixedDeltaTime)
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref s, smoothTime);
     }
-
 }
