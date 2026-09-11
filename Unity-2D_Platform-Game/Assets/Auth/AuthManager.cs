@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Firebase;
 using Firebase.Auth;
-using Firebase.Firestore; // Lưu thêm tên vào Database (nếu dùng)
+using Firebase.Firestore;
 using TMPro;
 
 public class AuthManager : MonoBehaviour
@@ -25,7 +25,7 @@ public class AuthManager : MonoBehaviour
     public TextMeshProUGUI regStatusText;
 
     [Header("Chuyển Scene Game")]
-    public string gameSceneName = "Lvl1";
+    public string gameSceneName = "MainMenü"; // Đã sửa tên sang MainMenü
 
     private FirebaseAuth auth;
 
@@ -62,7 +62,7 @@ public class AuthManager : MonoBehaviour
         if (regStatusText != null) regStatusText.text = "";
     }
 
-    // --- XỬ LÝ ĐĂNG KÝ (Có kiểm tra Nhập lại mật khẩu & Tên) ---
+    // --- XỬ LÝ ĐĂNG KÝ ---
     public void RegisterButton()
     {
         StartCoroutine(Register(
@@ -99,6 +99,21 @@ public class AuthManager : MonoBehaviour
         }
         else
         {
+            // Lấy tài khoản vừa tạo thành công
+            FirebaseUser newUser = registerTask.Result.User;
+
+            if (newUser != null)
+            {
+                // Cập nhật tên người dùng (DisplayName) vào hồ sơ Firebase
+                UserProfile profile = new UserProfile { DisplayName = username };
+                var updateProfileTask = newUser.UpdateUserProfileAsync(profile);
+                yield return new WaitUntil(() => updateProfileTask.IsCompleted);
+
+                // Lưu tên tạm thời vào PlayerPrefs để dùng khi đăng nhập
+                PlayerPrefs.SetString("LoggedInUsername", username);
+                PlayerPrefs.Save();
+            }
+
             regStatusText.text = "Đăng ký thành công!";
             yield return new WaitForSeconds(1.2f);
             OpenLoginPanel(); // Thành công tự quay về Đăng nhập
@@ -128,8 +143,25 @@ public class AuthManager : MonoBehaviour
         }
         else
         {
+            FirebaseUser user = loginTask.Result.User;
+
+            // Nếu người dùng có DisplayName trên Firebase, lưu vào PlayerPrefs
+            if (user != null && !string.IsNullOrEmpty(user.DisplayName))
+            {
+                PlayerPrefs.SetString("LoggedInUsername", user.DisplayName);
+            }
+            else if (!PlayerPrefs.HasKey("LoggedInUsername"))
+            {
+                // Trường hợp tài khoản chưa có DisplayName thì lấy phần tên trước dấu @ của Email
+                string fallbackName = email.Split('@')[0];
+                PlayerPrefs.SetString("LoggedInUsername", fallbackName);
+            }
+            PlayerPrefs.Save();
+
             loginStatusText.text = "Đăng nhập thành công!";
             yield return new WaitForSeconds(1f);
+            
+            // Chuyển sang màn hình chính MainMenü
             SceneManager.LoadScene(gameSceneName);
         }
     }
