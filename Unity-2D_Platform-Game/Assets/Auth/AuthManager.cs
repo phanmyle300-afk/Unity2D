@@ -158,6 +158,14 @@ public class AuthManager : MonoBehaviour
             }
             PlayerPrefs.Save();
 
+            // === [THÊM ĐỒNG BỘ LỊCH SỬ TỪ FIREBASE VỀ MÁY TẠI ĐÂY] ===
+            if (GameHistoryManager.Instance != null)
+            {
+                GameHistoryManager.Instance.FetchHistoryFromFirebase(() => {
+                    Debug.Log("🔥 Đã đồng bộ Lịch sử từ Firebase thành công!");
+                });
+            }
+
             loginStatusText.text = "Đăng nhập thành công!";
             yield return new WaitForSeconds(1f);
             

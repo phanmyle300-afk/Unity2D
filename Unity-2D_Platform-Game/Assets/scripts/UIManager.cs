@@ -58,6 +58,13 @@ public class UIManager : MonoBehaviour
     public void LoadLevel(string sceneName)
     {
         Time.timeScale = 1f;
+
+        // Cập nhật màn chơi hiện tại cho bộ quản lý Lịch sử
+        if (GameHistoryManager.Instance != null)
+        {
+            GameHistoryManager.Instance.UpdateReachedLevel(sceneName);
+        }
+
         SceneManager.LoadScene(sceneName);
     }
 
@@ -84,17 +91,36 @@ public class UIManager : MonoBehaviour
             PlayerPrefs.SetInt("UnlockedLevel", currentLevelIndex + 1);
             PlayerPrefs.Save();
         }
+
+        // Cập nhật màn chơi tiếp theo vào bộ quản lý Lịch sử
+        if (GameHistoryManager.Instance != null)
+        {
+            GameHistoryManager.Instance.UpdateReachedLevel("Level " + (currentLevelIndex + 1));
+        }
     }
 
     public void ShowGameOver()
     {
         if (gameOverPanel != null) gameOverPanel.SetActive(true);
         Time.timeScale = 0f;
+
+        // === [CHÈN LƯU LỊCH SỬ KHI GAME OVER TẠI ĐÂY] ===
+        if (GameHistoryManager.Instance != null)
+        {
+            GameHistoryManager.Instance.EndRunAndSaveHistory();
+        }
     }
 
     public void RestartCurrentLevel()
     {
         Time.timeScale = 1f;
+
+        // Bắt đầu một Lượt chơi mới khi người chơi chọn Chơi Lại
+        if (GameHistoryManager.Instance != null)
+        {
+            GameHistoryManager.Instance.StartNewRun();
+        }
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

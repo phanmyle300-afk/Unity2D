@@ -45,8 +45,9 @@ public class MainCharacterController : MonoBehaviour
     private bool isOnLadder = false;
     private bool isDashing = false;
 
-    // Biến di chuyển nút cảm ứng Mobile UI
+    // Biến di chuyển và hành động nút cảm ứng Mobile UI
     private float mobileRunInputX = 0f;
+    private bool mobileJumpTriggered = false;
 
     private void Start()
     {
@@ -58,7 +59,6 @@ public class MainCharacterController : MonoBehaviour
         
         if (playerRigidBody2D != null)
         {
-            // SỬA TẠI ĐÂY: Hạ gravityScale từ 20f xuống 2f để không bị quá nặng
             playerRigidBody2D.gravityScale = 2f; 
             playerRigidBody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
@@ -114,10 +114,12 @@ public class MainCharacterController : MonoBehaviour
 
     private void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && (isOnGround || isOnWall))
+        // Nhận cả phím Space trên PC lẫn mobileJumpTriggered từ UI
+        if ((Input.GetKeyDown(KeyCode.Space) || mobileJumpTriggered) && (isOnGround || isOnWall))
         {
             ExecuteJump();
         }
+        mobileJumpTriggered = false; // Reset cờ nhảy mỗi frame
     }
 
     private void ExecuteJump()
@@ -136,7 +138,7 @@ public class MainCharacterController : MonoBehaviour
     }
 
     // ==========================================
-    // CÁC HÀM CẢM ỨNG MOBILE (EVENT TRIGGER)
+    // CÁC HÀM CẢM ỨNG MOBILE (GÁN VÀO EVENT TRIGGER)
     // ==========================================
 
     public void PointerDownLeft()
@@ -160,7 +162,7 @@ public class MainCharacterController : MonoBehaviour
 
     public void PointerDownJump()
     {
-        ExecuteJump();
+        mobileJumpTriggered = true;
     }
 
     public void PointerDownPunch()

@@ -20,9 +20,7 @@ public class sceneController : MonoBehaviour
 
     public void NextLevel()
     {
-
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
-
     }
 
     public void LoadScene(string sceneName)
@@ -39,5 +37,4 @@ public class sceneController : MonoBehaviour
     {
         SceneManager.LoadSceneAsync(0);
     }
-
 }

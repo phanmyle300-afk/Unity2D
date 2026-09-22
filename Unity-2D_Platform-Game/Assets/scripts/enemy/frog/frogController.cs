@@ -37,9 +37,15 @@ public class frogController : MonoBehaviour
     private void Start()
     {
         player = GameObject.FindWithTag("Player");
-        PlayerhealthControl = player.GetComponent<healthControl>();
+        
+        // Kiểm tra nếu tìm thấy player mới lấy component healthControl
+        if (player != null)
+        {
+            PlayerhealthControl = player.GetComponent<healthControl>();
+            distance = Vector2.Distance(player.transform.position, this.gameObject.transform.position);
+        }
+
         frogAnimator = this.gameObject.GetComponent<Animator>();
-        distance = Vector2.Distance(player.transform.position,this.gameObject.transform.position);
     }
 
     private void Update()
@@ -51,7 +57,12 @@ public class frogController : MonoBehaviour
 
     private void distanceCounter()
     {
-        distance = Vector2.Distance(player.transform.position, this.gameObject.transform.position);
+        // === SỬA LỖI TẠI ĐÂY ===
+        // Thêm "if (player != null)" để chắc chắn player còn tồn tại trên màn hình mới tính khoảng cách
+        if (player != null)
+        {
+            distance = Vector2.Distance(player.transform.position, this.gameObject.transform.position);
+        }
     }
 
     private void getForce()
@@ -145,7 +156,10 @@ public class frogController : MonoBehaviour
         if (collision.gameObject.tag.Equals("Player"))
         {
             frogAnimator.SetTrigger("isPunchAttacking");
-            PlayerhealthControl.takeDamege(punchDamage);
+            if (PlayerhealthControl != null)
+            {
+                PlayerhealthControl.takeDamege(punchDamage);
+            }
         }
     }
 }

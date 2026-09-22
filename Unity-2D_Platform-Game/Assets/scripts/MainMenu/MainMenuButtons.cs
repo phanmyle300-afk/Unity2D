@@ -51,6 +51,12 @@ public class MainMenuButtons : MonoBehaviour
 
     public void OnStartButtonPressed()
     {
+        // === [BẮT ĐẦU ĐẾM THỜI GIAN LƯỢT CHƠI MỚI TẠI ĐÂY] ===
+        if (GameHistoryManager.Instance != null)
+        {
+            GameHistoryManager.Instance.StartNewRun();
+        }
+
         SceneManager.LoadScene("lvl1");
         if (audioManager != null) audioManager.playButtonTouch();
     }

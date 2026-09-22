@@ -7,18 +7,34 @@ public class MainMenuDisplay : MonoBehaviour
 
     private void Start()
     {
-        // Lấy tên đã lưu, nếu chưa có thì hiển thị "Người chơi"
-        string savedUsername = PlayerPrefs.GetString("LoggedInUsername", "Người chơi");
-        
-        Debug.Log("Tên lấy từ PlayerPrefs là: " + savedUsername);
+        UpdateName();
+    }
+
+    private void OnEnable()
+    {
+        UpdateName();
+    }
+
+    public void UpdateName()
+    {
+        if (usernameText == null)
+        {
+            usernameText = GetComponentInChildren<TMP_Text>();
+        }
 
         if (usernameText != null)
         {
-            usernameText.text = "Xin chào, " + savedUsername + "!";
-        }
-        else
-        {
-            Debug.LogError("Chưa kéo đối tượng UsernameText vào ô script!");
+            // Lấy tên đã lưu
+            string savedName = PlayerPrefs.GetString("LoggedInUsername", "");
+
+            // Nếu lấy được tên hợp lệ từ Login thì mới đổi, nếu rỗng thì giữ nguyên tên đang gõ trên Editor!
+            if (!string.IsNullOrEmpty(savedName) && !string.IsNullOrWhiteSpace(savedName))
+            {
+                usernameText.text = "Xin chào, " + savedName + "!";
+            }
+
+            usernameText.color = Color.white;
+            usernameText.gameObject.SetActive(true);
         }
     }
 }

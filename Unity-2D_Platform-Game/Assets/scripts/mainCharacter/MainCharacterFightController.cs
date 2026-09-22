@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems; // Chặn đấm khi chạm UI
 
 public class MainCharacter : MonoBehaviour
 {
@@ -18,12 +19,12 @@ public class MainCharacter : MonoBehaviour
     public float punchRadius;
 
     private Animator PlayerAnimator;
- 
 
     private void Start()
     {
         PlayerAnimator = GetComponent<Animator>();
     }
+
     private void Update()
     {
         PunchAttackControl();
@@ -32,13 +33,28 @@ public class MainCharacter : MonoBehaviour
 
     private void PunchAttackControl()
     {
+        if (IsPointerOverUI()) return;
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-           
             PlayerAnimator.SetTrigger("isAttacking");
             punch();
-          
         }
+    }
+
+    bool IsPointerOverUI()
+    {
+        if (Input.touchCount > 0)
+        {
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
+                {
+                    return true;
+                }
+            }
+        }
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 
     private void punch()
@@ -55,7 +71,6 @@ public class MainCharacter : MonoBehaviour
                 }
             }
         }
-
     }
 
     private void Shotattack()
@@ -64,22 +79,27 @@ public class MainCharacter : MonoBehaviour
         {
             PlayerAnimator.SetTrigger("isShot");
 
-            GameObject Clone = Instantiate(Bullet, this.gameObject.transform.position + new Vector3(0, offset, 0), this.gameObject.transform.rotation);
-            Clone.SetActive(true);
-            Clone.GetComponent<Rigidbody2D>().gravityScale = 0;
-
-            if (this.gameObject.transform.rotation.y != 0)
+            if (Bullet != null)
             {
-                Clone.GetComponent<Rigidbody2D>().AddForce(Vector2.left * bulletVectorMagnitude, ForceMode2D.Impulse);
+                GameObject Clone = Instantiate(Bullet, this.gameObject.transform.position + new Vector3(0, offset, 0), this.gameObject.transform.rotation);
+                Clone.SetActive(true);
+                Rigidbody2D rb = Clone.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.gravityScale = 0;
+                    if (this.gameObject.transform.rotation.y != 0)
+                    {
+                        rb.AddForce(Vector2.left * bulletVectorMagnitude, ForceMode2D.Impulse);
+                    }
+                    else
+                    {
+                        rb.AddForce(Vector2.right * bulletVectorMagnitude, ForceMode2D.Impulse);
+                    }
+                }
             }
-            else
-            {
-                Clone.GetComponent<Rigidbody2D>().AddForce(Vector2.right * bulletVectorMagnitude, ForceMode2D.Impulse);
-            }
-          
         }
     }
-   
+
     private void shotTimer()
     {
         bulletTimeCounter += Time.deltaTime;
@@ -99,7 +119,6 @@ public class MainCharacter : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       
         if (collision.gameObject.tag.Equals("Asi"))
         {
             hasVacaine = true;
@@ -111,7 +130,7 @@ public class MainCharacter : MonoBehaviour
     {
         if (collision.gameObject.tag.Equals("ball"))
         {
-            if (Bullet.name.Split("(")[0] != collision.gameObject.name.Split("(")[0])
+            if (Bullet != null && Bullet.name.Split("(")[0] != collision.gameObject.name.Split("(")[0])
             {
                 Destroy(Bullet);
                 Bullet = collision.gameObject;
@@ -121,9 +140,13 @@ public class MainCharacter : MonoBehaviour
 
         if (collision.gameObject.tag.Equals("HealthPosion"))
         {
-            this.gameObject.GetComponent<healthControl>().takeHealth(collision.gameObject.GetComponent<lootsDefualtBehavior>().getHealth());
+            healthControl hc = this.gameObject.GetComponent<healthControl>();
+            lootsDefualtBehavior loot = collision.gameObject.GetComponent<lootsDefualtBehavior>();
+            if (hc != null && loot != null)
+            {
+                hc.takeHealth(loot.getHealth());
+            }
             Destroy(collision.gameObject);
         }
     }
-
 }
